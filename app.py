@@ -26,14 +26,17 @@ def split_sequence(sequence, n_steps):
         y.append(seq_y)
     return array(X), array(y)
 
+
 def model_train(raw_seq):
     #number of time steps
-    n_steps = 3
+    raw_seq_len = int(len(raw_seq)/3)
+    n_steps = raw_seq_len
     # split into samples
     X, y = split_sequence(raw_seq, n_steps)
     # reshape from [samples, timesteps] into [samples, timesteps, features]
     n_features = 1
     X = X.reshape((X.shape[0], X.shape[1], n_features))
+    
     # define model
     model = Sequential()
     model.add(Conv1D(filters=64, kernel_size=2, activation='relu', input_shape=(n_steps, n_features)))
@@ -42,14 +45,23 @@ def model_train(raw_seq):
     model.add(Dense(50, activation='relu'))
     model.add(Dense(1))
     model.compile(optimizer='adam', loss='mse')
+    
     # fit model
-    model.fit(X, y, epochs=1000, verbose=0)
+    model.fit(X, y, epochs=500, verbose=0)
+    
     # prediction
-    #input_length = int(len(raw_seq)/2)
-    x_input = array(raw_seq[-n_steps:].copy())
-    x_input = x_input.reshape((1, n_steps, n_features))
-    yhat = model.predict(x_input, verbose=0)
-    return yhat
+    Pred = []
+    full_seq = raw_seq.copy()
+    for i in range(0,raw_seq_len):
+        x_input = array(full_seq[-n_steps:].copy())
+        x_input = x_input.reshape((1, n_steps, n_features))
+        yhat = model.predict(x_input, verbose=0)[0][0]
+        Pred.append(float(yhat))
+        full_seq.append(yhat)
+        
+    return jsonify({"prediction":Pred,
+                    "data":raw_seq})
+
 
 
 @app.route('/', methods=['POST'])
@@ -57,7 +69,8 @@ def result():
     req_data = request.get_json()
     #y = json.dumps(req_data)
     res = model_train(req_data["data"])
-    return str(res)
+    print(res)
+    return res
 
 
 if __name__ == "__main__":
