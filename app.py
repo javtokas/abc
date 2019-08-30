@@ -26,7 +26,8 @@ def split_sequence(sequence, n_steps):
         y.append(seq_y)
     return array(X), array(y)
 
-def model_train(raw_seq):
+def model_train():
+    raw_seq = [1,2,3,4,5,6,7,8,9]
     #number of time steps
     n_steps = 3
     # split into samples
@@ -52,14 +53,24 @@ def model_train(raw_seq):
     return yhat
 
 
-@app.route('/', methods=['POST'])
+@app.route('/', methods=['GET'])
 def result():
-    req_data = request.get_json()
+    #req_data = request.get_json()
     #y = json.dumps(req_data)
-    res = model_train(req_data["data"])
+    res = model_train()
     return str(res)
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0', port=80)
+    #app.run()
     
+    
+    
+"""
+http://127.0.0.1:5000
+
+{
+	"data": [1,2,3,4,5,6,7,8,9]
+}
+"""
