@@ -27,7 +27,7 @@ def split_sequence(sequence, n_steps):
     return array(X), array(y)
 
 
-def model_train(raw_seq,n_epochs):
+def model_train(raw_seq,n_epochs,n_batch_shape):
     #number of time steps
     raw_seq_len = int(len(raw_seq)/3)
     n_steps = raw_seq_len
@@ -42,7 +42,7 @@ def model_train(raw_seq,n_epochs):
     model.add(Conv1D(filters=64, kernel_size=2, activation='relu', input_shape=(n_steps, n_features)))
     model.add(MaxPooling1D(pool_size=2))
     model.add(Flatten())
-    model.add(Dense(50, activation='relu'))
+    model.add(Dense(n_batch_shape, activation='relu'))
     model.add(Dense(1))
     model.compile(optimizer='adam', loss='mse')
     
@@ -71,7 +71,7 @@ def model_train(raw_seq,n_epochs):
 def result():
     req_data = request.get_json()
     #y = json.dumps(req_data)
-    res = model_train(req_data["data"],req_data["epochs"])
+    res = model_train(req_data["data"],req_data["epochs"],req_data["batchshapenum"])
     print(res)
     return res
 
