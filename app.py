@@ -1,4 +1,3 @@
-
 from flask import Flask
 from flask import request, jsonify
 from numpy import array
@@ -29,9 +28,8 @@ def split_sequence(sequence, n_steps):
     return array(X), array(y)
 
 
-def model_train(raw_seq,n_epochs,n_batch_shape):
+def model_train(raw_seq):
     #number of time steps
-    raw_seq = [math.sin(x)+x/7+random.random() for x in range(0,55)].copy()
     raw_seq_len = int(len(raw_seq)/3)
     n_steps = raw_seq_len
     # split into samples
@@ -45,13 +43,13 @@ def model_train(raw_seq,n_epochs,n_batch_shape):
     model.add(Conv1D(filters=64, kernel_size=2, activation='relu', input_shape=(n_steps, n_features)))
     model.add(MaxPooling1D(pool_size=2))
     model.add(Flatten())
-    model.add(Dense(n_batch_shape, activation='relu'))
+    model.add(Dense(raw_seq_len, activation='relu'))
     model.add(Dense(1))
     model.compile(optimizer='adam', loss='mse')
     
     # fit model
     print('okA')
-    model.fit(X, y, epochs=n_epochs, verbose=0)
+    model.fit(X, y, epochs=400, verbose=0)
     print('okB')
     
     # prediction
@@ -73,21 +71,15 @@ def model_train(raw_seq,n_epochs,n_batch_shape):
 @app.route('/', methods=['POST'])
 def result():
     req_data = request.get_json()
-    #y = json.dumps(req_data)
-    res = model_train(req_data["data"],req_data["epochs"],req_data["batchshapenum"])
+    
+    data_arr = []
+    for i in req_data["data"]:
+        data_arr.append(float(i))
+    
+    res = model_train(data_arr)
     print(res)
     return res
 
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=80)
-    
-    
-    
-"""
-http://0.0.0.0:80
-
-{
-	"data": [1,2,3,4,5,6,7,8,9]
-}
-"""
