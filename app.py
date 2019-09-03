@@ -55,7 +55,7 @@ def model_train(raw_seq):
     Pred = []
     full_seq = raw_seq.copy()
     for i in range(0,raw_seq_len):
-	print('ok'+str(i))
+        print('ok'+str(i))
         x_input = array(full_seq[-n_steps:].copy())
         x_input = x_input.reshape((1, n_steps, n_features))
         yhat = model.predict(x_input, verbose=0)[0][0]
@@ -88,3 +88,6 @@ http://0.0.0.0:80
 	"data": [1,2,3,4,5,6,7,8,9]
 }
 """
+
+
+
