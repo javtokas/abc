@@ -29,6 +29,7 @@ def split_sequence(sequence, n_steps):
 
 def model_train(raw_seq,n_epochs,n_batch_shape):
     #number of time steps
+    raw_seq = [math.sin(x)+x/7+random.random() for x in range(0,55)].copy()
     raw_seq_len = int(len(raw_seq)/3)
     n_steps = raw_seq_len
     # split into samples
@@ -88,6 +89,3 @@ http://0.0.0.0:80
 	"data": [1,2,3,4,5,6,7,8,9]
 }
 """
-
-
-
