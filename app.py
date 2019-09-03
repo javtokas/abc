@@ -27,7 +27,7 @@ def split_sequence(sequence, n_steps):
     return array(X), array(y)
 
 
-def model_train(raw_seq):
+def model_train(raw_seq,n_epochs):
     #number of time steps
     raw_seq_len = int(len(raw_seq)/3)
     n_steps = raw_seq_len
@@ -48,7 +48,7 @@ def model_train(raw_seq):
     
     # fit model
     print('okA')
-    model.fit(X, y, epochs=500, verbose=0)
+    model.fit(X, y, epochs=n_epochs, verbose=0)
     print('okB')
     
     # prediction
@@ -71,7 +71,7 @@ def model_train(raw_seq):
 def result():
     req_data = request.get_json()
     #y = json.dumps(req_data)
-    res = model_train(req_data["data"])
+    res = model_train(req_data["data"],req_data["epochs"])
     print(res)
     return res
 
