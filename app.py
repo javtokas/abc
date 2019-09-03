@@ -7,6 +7,8 @@ from keras.layers import Dense
 from keras.layers import Flatten
 from keras.layers.convolutional import Conv1D
 from keras.layers.convolutional import MaxPooling1D
+import math
+import random
 
 
 app = Flask(__name__)
