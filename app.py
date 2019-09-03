@@ -7,6 +7,7 @@ from keras.layers import Dense
 from keras.layers import Flatten
 from keras.layers.convolutional import Conv1D
 from keras.layers.convolutional import MaxPooling1D
+from keras import backend as K
 
 
 app = Flask(__name__)
@@ -47,7 +48,7 @@ def model_train(raw_seq):
     model.add(Conv1D(filters=64, kernel_size=2, activation='relu', input_shape=(n_steps, n_features)))
     model.add(MaxPooling1D(pool_size=2))
     model.add(Flatten())
-    model.add(Dense(len(raw_seq), activation='relu'))
+    model.add(Dense(raw_seq_len*3*4, activation='relu'))
     model.add(Dense(1))
     model.compile(optimizer='adam', loss='mse')
     
@@ -64,6 +65,8 @@ def model_train(raw_seq):
         yhat = model.predict(x_input, verbose=0)[0][0]
         Pred.append(float(yhat))
         full_seq.append(yhat)
+		
+    K.clear_session()
         
     return jsonify({"prediction":Pred,
                     "data":raw_seq})
@@ -90,3 +93,4 @@ http://0.0.0.0:80
 	"data": [1,2,3,4,5,6,7,8,9]
 }
 """
+
