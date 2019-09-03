@@ -7,8 +7,6 @@ from keras.layers import Dense
 from keras.layers import Flatten
 from keras.layers.convolutional import Conv1D
 from keras.layers.convolutional import MaxPooling1D
-import math
-import random
 
 
 app = Flask(__name__)
@@ -31,7 +29,11 @@ def split_sequence(sequence, n_steps):
 
 def model_train(raw_seq):
     #number of time steps
-    raw_seq = [math.sin(x)+x/7+random.random() for x in range(0,65)].copy()
+    temp_arr = []
+    for i in raw_seq:
+        temp_arr.append(float(i))
+    raw_seq = temp_arr.copy()
+    
     raw_seq_len = int(len(raw_seq)/3)
     n_steps = raw_seq_len
     # split into samples
