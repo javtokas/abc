@@ -35,7 +35,7 @@ def anomaly_elimination(arr):
     IQR = Q75 - Q25
     arr_cleaned = []
     for i in arr:
-        if i < (Q75 + 1.3*IQR) and i > (Q25 - 1.3*IQR):
+        if i < (Q75 + 1.0*IQR) and i > (Q25 - 1.0*IQR):
             arr_cleaned.append(i)
     return arr_cleaned
 
@@ -69,7 +69,7 @@ def model_train(raw_seq):
     model.compile(optimizer='adam', loss='mse')
     
     # fit model
-    model.fit(X, y, epochs=350, verbose=0)
+    model.fit(X, y, epochs=433, verbose=0)
     
     # prediction
     Pred = []
