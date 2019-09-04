@@ -1,6 +1,7 @@
 
 from flask import Flask
 from flask import request, jsonify
+import numpy as np
 from numpy import array
 from keras.models import Sequential
 from keras.layers import Dense
@@ -28,14 +29,27 @@ def split_sequence(sequence, n_steps):
     return array(X), array(y)
 
 
+def anomaly_elimination(arr):
+    arr_mean = np.mean(arr)
+    arr_cleaned = []
+    for i in arr:
+        if i < 2 * arr_mean:
+            arr_cleaned.append(i)
+    return arr_cleaned
+
+
 def model_train(raw_seq):
-    #number of time steps
+    #to float
     temp_arr = []
     for i in raw_seq:
         temp_arr.append(float(i))
     raw_seq = temp_arr.copy()
     
+    #remove anomalies
+    raw_seq = anomaly_elimination(raw_seq).copy()
+    
     raw_seq_len = int(len(raw_seq)/3)
+    #number of time steps
     n_steps = raw_seq_len
     # split into samples
     X, y = split_sequence(raw_seq, n_steps)
@@ -59,7 +73,6 @@ def model_train(raw_seq):
     Pred = []
     full_seq = raw_seq.copy()
     for i in range(0,raw_seq_len):
-        print('ok'+str(i))
         x_input = array(full_seq[-n_steps:].copy())
         x_input = x_input.reshape((1, n_steps, n_features))
         yhat = model.predict(x_input, verbose=0)[0][0]
@@ -69,7 +82,7 @@ def model_train(raw_seq):
     K.clear_session()
         
     return jsonify({"prediction":Pred,
-                    "data":raw_seq})
+                    "data":temp_arr})
 
 
 
@@ -93,4 +106,3 @@ http://0.0.0.0:80
 	"data": [1,2,3,4,5,6,7,8,9]
 }
 """
-
