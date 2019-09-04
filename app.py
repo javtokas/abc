@@ -30,10 +30,12 @@ def split_sequence(sequence, n_steps):
 
 
 def anomaly_elimination(arr):
-    arr_mean = np.mean(arr)
+    Q75 = np.quantile(arr,0.75)
+    Q25 = np.quantile(arr,0.25)
+    IQR = Q75 - Q25
     arr_cleaned = []
     for i in arr:
-        if i < 2 * arr_mean:
+        if i < (Q75 + 2*IQR) and i > (Q25 - 2*IQR):
             arr_cleaned.append(i)
     return arr_cleaned
 
@@ -82,7 +84,8 @@ def model_train(raw_seq):
     K.clear_session()
         
     return jsonify({"prediction":Pred,
-                    "data":temp_arr})
+                    "data":temp_arr,
+                    "data_cleaned":raw_seq})
 
 
 
