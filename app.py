@@ -35,7 +35,7 @@ def anomaly_elimination(arr):
     IQR = Q75 - Q25
     arr_cleaned = []
     for i in arr:
-        if i < (Q75 + 1.0*IQR) and i > (Q25 - 1.0*IQR):
+        if i < (Q75 + 1.1*IQR) and i > (Q25 - 1.1*IQR):
             arr_cleaned.append(i)
     return arr_cleaned
 
